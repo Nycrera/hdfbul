@@ -1,0 +1,9 @@
+{
+    "type": "object",
+    "javaType": "message.types.Action",
+    "properties": {
+      "action": {
+        "type": "string"
+      }
+    }
+  }

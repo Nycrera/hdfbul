@@ -1,0 +1,18 @@
+{
+    "type": "object",
+    "javaType": "message.types.Status",
+    "properties": {
+      "name": {
+       "type": "string"
+      },
+      "angle": {
+        "type": "number"
+      },
+      "sensorPosX": {
+        "type": "number"
+      },
+      "sensorPosY": {
+        "type": "number"
+      }
+    }
+  }
