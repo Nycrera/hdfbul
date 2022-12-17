@@ -1,7 +1,6 @@
 package com.havel.hdfbul;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,6 +15,8 @@ public class App {
 	static Sensor sensor;
 	static String TYPE = null;
 	static Timer timer = new Timer();
+	final static long SENSOR_SAMPLE_RATE = 2 * 1000; // 1 package per 2 seconds
+	final static long CORE_CALC_RATE = 10 * 1000; // Calculate target position every 10 seconds.
 
 	public static void main(String[] args) throws Exception {
 		System.out.println("Select a procedure by typing \"SENSOR\" or \"CORE\"");
@@ -53,7 +54,7 @@ public class App {
 						e.printStackTrace();
 					}
 				}
-			}, 10 * 1000, 10 * 1000);
+			}, CORE_CALC_RATE, CORE_CALC_RATE);
 
 		} else if (TYPE.equals("SENSOR")) {
 			System.out.println("Started program as a Sensor");
@@ -118,7 +119,7 @@ public class App {
 					e.printStackTrace();
 				}
 			}
-		}, 2 * 1000, 2 * 1000); // Send data every 2 seconds
+		}, SENSOR_SAMPLE_RATE , SENSOR_SAMPLE_RATE); // Send data every 2 seconds
 	}
 
 	public static void stopSensor() {
