@@ -14,14 +14,18 @@ import message.types.Status;
 public class App {
 	static CoreUnit core_unit;
 	static Sensor sensor;
-	static String TYPE = "SENSOR";
+	static String TYPE = null;
 	static Timer timer = new Timer();
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("Hello");
+		System.out.println("Select a procedure by typing \"SENSOR\" or \"CORE\"");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-		if (TYPE == "CORE") {
+		while(TYPE == null) {
+			String input = reader.readLine().toUpperCase().trim();
+			if(input.equals("SENSOR") || input.equals("CORE")) TYPE = input;
+			else System.out.println("Invalid Input");
+		}
+		if (TYPE.equals("CORE")) {
 			System.out.println("Started program as the Core Data Processing Unit");
 			core_unit = new CoreUnit();
 
@@ -51,10 +55,15 @@ public class App {
 				}
 			}, 10 * 1000, 10 * 1000);
 
-		} else if (TYPE == "SENSOR") {
+		} else if (TYPE.equals("SENSOR")) {
 			System.out.println("Started program as a Sensor");
 			System.out.println("Sensor Name:");
 			String sensorName = reader.readLine();
+			if(sensorName.isBlank()) {
+				System.err.println("Invalid sensor name.");
+				return;
+			}
+			try {
 			System.out.println("Sensor Position in X axis:");
 			Double posX = Double.parseDouble(reader.readLine());
 			System.out.println("Sensor Position in Y axis:");
@@ -66,6 +75,10 @@ public class App {
 			target.posY = Double.parseDouble(reader.readLine());
 			sensor = new Sensor(sensorName, posX, posY);
 			sensor.setTarget(target);
+			} catch(NumberFormatException e) {
+				System.err.println("Invalid Input. (NumberFormatException)");
+			}
+
 			// Run Kafka reader in another thread to not block the further user input.
 			Runnable runnable = () -> {
 				@SuppressWarnings("unused")
@@ -77,12 +90,16 @@ public class App {
 			while (true) {
 				System.out.println("To move the target press enter.");
 				reader.readLine();
+				try {
 				Target newTarget = new Target();
 				System.out.println("Target Position in X axis:");
 				newTarget.posX = Double.parseDouble(reader.readLine());
 				System.out.println("Target Position in Y axis:");
 				newTarget.posY = Double.parseDouble(reader.readLine());
 				sensor.setTarget(newTarget);
+				} catch(NumberFormatException e) {
+					System.err.println("Invalid Input. (NumberFormatException)");
+				}
 				System.out.println("Target moved.");
 			}
 		} else {
